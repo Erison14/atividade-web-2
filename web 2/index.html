@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards de Perfil Interativos - Premium Edition</title>
+    <style>
+        
+        :root {
+            --bg-page: #f8f9fa; 
+            --text-main: #2c3e50; 
+            --text-muted: #8395a7;
+            --card-bg-0: #ffffff;
+            --card-bg-1: #e0f2f1; 
+            --card-bg-2: #fff0f5; 
+            --btn-follow: #ff6b6b; 
+            --btn-unfollow: #c8d6e5;
+            --btn-text: #ffffff;
+            --shadow: rgba(44, 62, 80, 0.08);
+            --border-color: rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #0f172a; 
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg-0: #1e293b;
+            --card-bg-1: #115e59;
+            --card-bg-2: #4c1d95; 
+            --btn-follow: #f43f5e;
+            --btn-unfollow: #334155;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --border-color: rgba(255,255,255,0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; 
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .theme-toggle-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .btn-theme {
+            padding: 12px 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 50px; /* Formato pílula */
+            background-color: var(--card-bg-0);
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .btn-theme:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow);
+        }
+
+        /* Container de Cards */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: var(--card-bg-0);
+            border: 1px solid var(--border-color); /* Borda premium */
+            border-radius: 24px; /* Cantos mais arredondados */
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 10px 30px var(--shadow);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            transform-origin: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--btn-follow);
+        }
+
+        /* Avatar estilo Orgânico (Blob) */
+        .avatar {
+            width: 110px;
+            height: 110px;
+           
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            object-fit: cover;
+            border: 4px solid var(--card-bg-0);
+            box-shadow: 0 0 0 3px var(--btn-follow); 
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+        
+        .avatar:hover { 
+            
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            transform: scale(1.05) rotate(5deg); 
+        }
+        
+        .avatar-hint {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        .name { font-size: 1.6rem; margin-bottom: 4px; font-weight: 800; }
+        .job { color: var(--btn-follow); font-size: 0.95rem; margin-bottom: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;}
+        .bio { font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; color: var(--text-muted); }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .skill-badge {
+            background-color: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-evenly;
+            width: 100%;
+            margin-bottom: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color); 
+        }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-value { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;}
+
+        /* Botões do Card */
+        .actions { display: flex; gap: 12px; width: 100%; }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 50px; 
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            color: var(--btn-text);
+            transition: all 0.3s ease;
+        }
+        .btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        .btn:active { transform: translateY(0); }
+        
+        .btn-follow { background-color: var(--btn-follow); }
+        .btn-follow.following { background-color: var(--btn-unfollow); color: var(--text-main); }
+        
+        .btn-color { background-color: var(--text-main); color: var(--card-bg-0); }
+
+      
+        .card.centered {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.05);
+            z-index: 1000;
+            cursor: default;
+            max-width: 400px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.8); 
+            z-index: 999;
+            backdrop-filter: blur(8px); 
+            cursor: pointer;
+        }
+        .overlay.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="theme-toggle-container">
+        <button id="themeToggle" class="btn-theme">🌓 Alternar Tema</button>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="cards-container">
+        
+        <div class="card-wrapper">
+            <div class="card" data-followers="1250" data-color-index="0" data-avatar-index="0">
+                <img src="imagens/marcos.jpg" class="avatar" alt="Avatar" onerror="this.src='https://i.pravatar.cc/150?img=11'">
+                <span class="avatar-hint">Clique para trocar</span>
+                <h2 class="name">Marcos Antonio</h2>
+                <h3 class="job">Dev Front-end</h3>
+                <p class="bio">Especialista em transformar ideias complexas em interfaces dinâmicas e funcionais, sempre priorizando a performance e a acessibilidade web.</p>
+                <div class="skills">
+                    <span class="skill-badge">HTML/CSS</span>
+                    <span class="skill-badge">JavaScript</span>
+                    <span class="skill-badge">React</span>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-value follower-count">1250</span>
+                        <span class="stat-label">Seguidores</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">340</span>
+                        <span class="stat-label">Seguindo</span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-follow">Seguir</button>
+                    <button class="btn btn-color">🎨 Cores</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-wrapper">
+            <div class="card" data-followers="890" data-color-index="0" data-avatar-index="0">
+                <img src="imagens/rocha.jpg" class="avatar" alt="Avatar" onerror="this.src='https://i.pravatar.cc/150?img=15'">
+                <span class="avatar-hint">Clique para trocar</span>
+                <h2 class="name">Marco Rocha</h2>
+                <h3 class="job">UX/UI Designer</h3>
+                <p class="bio">Simplificando o digital através do design acessível, consistente e inteligente.</p>
+                <div class="skills">
+                    <span class="skill-badge">Figma</span>
+                    <span class="skill-badge">Prototipagem</span>
+                    <span class="skill-badge">UI/UX</span>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-value follower-count">890</span>
+                        <span class="stat-label">Seguidores</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">150</span>
+                        <span class="stat-label">Seguindo</span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-follow">Seguir</button>
+                    <button class="btn btn-color">🎨 Cores</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-wrapper">
+            <div class="card" data-followers="3200" data-color-index="0" data-avatar-index="0">
+                <img src="imagens/ycaro.jpg" class="avatar" alt="Avatar" onerror="this.src='https://i.pravatar.cc/150?img=32'">
+                <span class="avatar-hint">Clique para trocar</span>
+                <h2 class="name">Ycaro Gomes</h2>
+                <h3 class="job">Software Engineer</h3>
+                <p class="bio">Transformando lógica em inovação. Do back-end ao deploy, busco sempre a excelência técnica e a melhor experiência para o desenvolvedor.</p>
+                <div class="skills">
+                    <span class="skill-badge">Python</span>
+                    <span class="skill-badge">Node.js</span>
+                    <span class="skill-badge">Docker</span>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-value follower-count">3200</span>
+                        <span class="stat-label">Seguidores</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">42</span>
+                        <span class="stat-label">Seguindo</span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-follow">Seguir</button>
+                    <button class="btn btn-color">🎨 Cores</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. ALTERNAR MODO CLARO/ESCURO
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggle.textContent = '🌑 Modo Escuro';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Modo Claro';
+            }
+        });
+
+        // 2. LÓGICA DOS CARDS
+        const cards = document.querySelectorAll('.card');
+        const overlay = document.getElementById('overlay');
+
+        cards.forEach(card => {
+            
+            // --- CENTRALIZAR O CARD AO CLICAR ---
+            card.addEventListener('click', () => {
+                if (!card.classList.contains('centered')) {
+                    card.classList.add('centered');
+                    overlay.classList.add('active');
+                }
+            });
+
+            // --- TROCAR AVATAR ---
+            const avatar = card.querySelector('.avatar');
+            // Salvamos a imagem original e uma aleatória para alternar
+            const originalSrc = avatar.src;
+            
+            avatar.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                let currentIndex = parseInt(card.getAttribute('data-avatar-index'));
+                let nextIndex = (currentIndex + 1) % 2; 
+                
+                // Alterna entre a foto original do usuário e uma nova aleatória
+                if (nextIndex === 0) {
+                    avatar.src = originalSrc;
+                } else {
+                    avatar.src = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`;
+                }
+                
+                card.setAttribute('data-avatar-index', nextIndex);
+            });
+
+            // --- SEGUIR / DEIXAR DE SEGUIR ---
+            const btnFollow = card.querySelector('.btn-follow');
+            const followerCountElement = card.querySelector('.follower-count');
+            
+            btnFollow.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                
+                let isFollowing = btnFollow.classList.contains('following');
+                let followers = parseInt(card.getAttribute('data-followers'));
+
+                if (isFollowing) {
+                    followers--;
+                    btnFollow.textContent = 'Seguir';
+                    btnFollow.classList.remove('following');
+                } else {
+                    followers++;
+                    btnFollow.textContent = 'Seguindo';
+                    btnFollow.classList.add('following');
+                }
+
+                followerCountElement.textContent = followers;
+                card.setAttribute('data-followers', followers);
+            });
+
+            // --- MUDAR COR DE FUNDO DO CARD ---
+            const btnColor = card.querySelector('.btn-color');
+            
+            btnColor.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                
+                let colorIndex = parseInt(card.getAttribute('data-color-index'));
+                colorIndex = (colorIndex + 1) % 3; 
+                
+                card.style.backgroundColor = `var(--card-bg-${colorIndex})`;
+                card.setAttribute('data-color-index', colorIndex);
+            });
+        });
+
+        // Fechar card centralizado ao clicar no Overlay escuro
+        overlay.addEventListener('click', () => {
+            const centeredCard = document.querySelector('.card.centered');
+            if (centeredCard) {
+                centeredCard.classList.remove('centered');
+                overlay.classList.remove('active');
+            }
+        });
+
+    </script>
+</body>
+</html>
